@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="static/style.css">
+  <script defer src="static/script.js"></script>
+</head>
+<body>
+  <input type="text" placeholder="Your name..." class="user-name" onfocus="this.value=''"><br><br>
+  <br>
+  <div class="calendar">
+    <div class="month">
+      <h2>October<br>2022</h2>
+  </div>
+    <ul class="weekdays">
+    <li>Mo</li>
+    <li>Tu</li>
+    <li>We</li>
+    <li>Th</li>
+    <li>Fr</li>
+    <li>Sa</li>
+    <li>Su</li>
+  </ul>
+    <ul class="days">
+      {% for week in date %}
+        {% for day in week %}
+          <li class="el el--{{day}}">
+            {% if day != 0 %}
+              {{day}}
+            {% endif %}
+          </li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+    <div class="btn-send">Send data</div>
+  </div>
+</body>
+</html>
