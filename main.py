@@ -1,9 +1,23 @@
 from flask import Flask, redirect, request, render_template, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 import calendar
-
+import datetime
 
 meetings = {}
+months = {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December"
+}
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////database.db'
@@ -22,8 +36,15 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
-    date = calendar.monthcalendar(2022, 10)
-    return render_template("index.html", data=meetings, date=date)
+    date = []
+
+    current_month = datetime.datetime.now().month
+    current_year = datetime.datetime.now().year
+
+    date.append([[current_year, months[current_month]]] + calendar.monthcalendar(current_year, current_month))
+    date.append([[current_year, months[current_month+1]]] + calendar.monthcalendar(current_year, current_month+1))
+    date.append([[current_year, months[current_month+2]]] + calendar.monthcalendar(current_year, current_month+2))
+    return render_template("index.html", data=meetings, dates=date)
 
 
 @app.route('/register', methods=["GET", "POST"])
