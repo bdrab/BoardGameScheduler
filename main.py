@@ -1,9 +1,10 @@
-from flask import Flask, redirect, request, render_template, flash, url_for
+from flask import Flask, request, render_template, make_response
 from flask_sqlalchemy import SQLAlchemy
 import calendar
 import datetime
 
-meetings = {}
+meetings = {"5/October/2022": ["Bartek", "Kasia", "Madzia", "Karolina", "Pawel"],
+            "5/December/2022": ["Bartek", "Pawel"]}
 months = {
     1: "January",
     2: "February",
@@ -18,8 +19,8 @@ months = {
     11: "November",
     12: "December"
 }
-app = Flask(__name__)
 
+app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -28,9 +29,8 @@ db = SQLAlchemy(app)
 # class Choices(db.Model):
 #     __tablename__ = "boardgame"
 #     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(100), unique=True)
-#     website_address = db.Column(db.String(100))
-#     user_name = db.Column(db.Integer)
+#     user_name = db.Column(db.String(100), unique=True)
+#     dates = db.Column(db.String(1000))
 # db.create_all()
 
 
@@ -47,19 +47,39 @@ def index():
     return render_template("index.html", data=meetings, dates=date)
 
 
-@app.route('/register', methods=["GET", "POST"])
-def register_func():
+@app.route('/add', methods=["POST"])
+def add_availability():
     if request.method == "POST":
-        pass
+        user_data = request.json
+        user_name = user_data["name"]
+        user_meetings = user_data["data"]
+        if user_meetings:
+            for meeting in user_meetings:
+                if meeting in meetings:
+                    meetings[meeting].append(user_name)
+                else:
+                    meetings[meeting] = [user_name]
 
-    return redirect(url_for("index"))
+                meetings[meeting] = list(set(meetings[meeting]))
+
+    response = make_response("Successfully added.")
+    response.status_code = 200
+    return response
 
 
-@app.route('/test', methods=["GET", "POST"])
-def test_func():
+@app.route('/clear', methods=["POST"])
+def clear_availability():
     if request.method == "POST":
-        print(request.json)
-    return redirect(url_for("index"))
+        data = request.json
+        user_name = data["name"]
+        for event in meetings.copy().items():
+            user_name in event[1] and event[1].remove(user_name)
+            if not event[1]:
+                del meetings[event[0]]
+
+    response = make_response("Successfully cleared.")
+    response.status_code = 200
+    return response
 
 
 if __name__ == "__main__":
