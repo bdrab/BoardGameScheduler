@@ -3,8 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 import calendar
 import datetime
 
-meetings = {"5/October/2022": ["Bartek", "Kasia", "Madzia", "Karolina", "Pawel"],
-            "5/December/2022": ["Bartek", "Pawel"]}
+months_amount = 3
+users = ["Bartek", "Kasia", "Karolina", "Madzia", "Pawel"]
+meetings = {}
 months = {
     1: "January",
     2: "February",
@@ -40,11 +41,16 @@ def index():
 
     current_month = datetime.datetime.now().month
     current_year = datetime.datetime.now().year
-
     date.append([[current_year, months[current_month]]] + calendar.monthcalendar(current_year, current_month))
-    date.append([[current_year, months[current_month+1]]] + calendar.monthcalendar(current_year, current_month+1))
-    date.append([[current_year, months[current_month+2]]] + calendar.monthcalendar(current_year, current_month+2))
-    return render_template("index.html", data=meetings, dates=date)
+
+    for _ in range(1, months_amount):
+        current_month = current_month + 1
+        if current_month > 12:
+            current_year = current_year + 1
+            current_month = 1
+        date.append([[current_year, months[current_month]]] + calendar.monthcalendar(current_year, current_month))
+
+    return render_template("index.html", data=meetings, dates=date, users=users)
 
 
 @app.route('/add', methods=["POST"])

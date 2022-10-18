@@ -1,70 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>BoardGameScheduler</title>
-
+  <head>
+    <meta charset="UTF-8">
+    <title>BoardGameScheduler</title>
     <link rel="stylesheet" href="static/style.css">
     <script defer src="static/script.js"></script>
-</head>
-<body>
-  <select name="names" id="names" class="user-name">
-    <option value="" disabled selected>Your name... </option>
-    <option value="Bartek">Bartek</option>
-    <option value="Karolina">Karolina</option>
-    <option value="Madzia">Madzia</option>
-    <option value="Pawel">Pawel</option>
-  </select>
-  <br>
-  <button class="user-availability availability-button">Add your availability</button>
-  <br>
-  <button class="clear-user-availability availability-button">Clear your availability</button>
-  <br>
-  <div class="calendar-container">
-    {% for month in dates %}
-      <div class="calendar">
-      <div class="month">
-        <h2>{{month[0][1]}}<br>{{month[0][0]}}</h2>
-      </div>
-      <ul class="weekdays">
-      <li>Mo</li>
-      <li>Tu</li>
-      <li>We</li>
-      <li>Th</li>
-      <li>Fr</li>
-      <li>Sa</li>
-      <li>Su</li>
-    </ul>
-      <ul class="days">
-        {% for week in month[1::] %}
-          {% for day in week %}
-
-          {% if day != 0 %}
-
-
-               {% if '{}/{}/{}'.format(day,month[0][1],month[0][0]) in data %}
-               <li class="tooltip el el--{{day}} choose-day in-meetings" data-day="{{day}}" data-month="{{month[0][1]}}" data-year="{{month[0][0]}}">
-                {{day}}
-                <span class="tooltiptext in-meetings">{{ data['{}/{}/{}'.format(day,month[0][1],month[0][0])] }}</span>
-                </li>
-
-              {% else %}
-                    <li class="tooltip el el--{{day}} choose-day" data-day="{{day}}" data-month="{{month[0][1]}}" data-year="{{month[0][0]}}">
-              {{day}}
-            </li>
-              {% endif %}
-
-            {% else %}
-            <li class="el el--{{day}}" data-day="{{day}}" data-month="{{month[0][1]}}" data-year="{{month[0][0]}}">
-            </li>
-
-            {% endif %}
-          {% endfor %}
-        {% endfor %}
+  </head>
+  <body>
+    <select name="names" id="names" class="user-name">
+      <option value="" disabled selected>Choose your name...</option>
+      {% for user in users %}
+        <option value="{{user}}">{{user}}</option>
+      {% endfor %}
+    </select>
+    <br>
+    <button class="user-availability availability-button">Add your availability</button>
+    <br>
+    <button class="clear-user-availability availability-button">Clear your availability</button>
+    <br>
+    <div class="calendar-container">
+      {% for month in dates %}
+        <div class="calendar">
+        <div class="month">
+          <h2>{{month[0][1]}}<br>{{month[0][0]}}</h2>
+        </div>
+        <ul class="weekdays">
+        <li>Mo</li>
+        <li>Tu</li>
+        <li>We</li>
+        <li>Th</li>
+        <li>Fr</li>
+        <li>Sa</li>
+        <li>Su</li>
       </ul>
-      <div class="calendar-footer"></div>
+        <ul class="days">
+          {% for week in month[1::] %}
+            {% for day in week %}
+              {% if day != 0 %}
+                {% if '{}/{}/{}'.format(day,month[0][1],month[0][0]) in data %}
+                  <li class="tooltip el el--{{day}} choose-day in-meetings" data-day="{{day}}" data-month="{{month[0][1]}}" data-year="{{month[0][0]}}">
+                    {{day}}
+                    <span class="tooltiptext in-meetings">{{ data['{}/{}/{}'.format(day,month[0][1],month[0][0])] }}</span>
+                  </li>
+
+                {% else %}
+                  <li class="tooltip el el--{{day}} choose-day" data-day="{{day}}" data-month="{{month[0][1]}}" data-year="{{month[0][0]}}">
+                    {{day}}
+                  </li>
+                {% endif %}
+              {% else %}
+                <li class="el el--{{day}}" data-day="{{day}}" data-month="{{month[0][1]}}" data-year="{{month[0][0]}}">
+                </li>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </ul>
+        <div class="calendar-footer"></div>
+      </div>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
-</body>
+  </body>
 </html>
